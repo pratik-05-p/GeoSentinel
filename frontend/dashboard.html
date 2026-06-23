@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — GeoSentinel</title>
+  <meta name="description" content="GeoSentinel assessment dashboard. Enter geological parameters and receive an instant landslide hazard score." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- jsPDF (client-side PDF generation) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230F172A'/><text y='22' x='4' font-size='20'>🛡</text></svg>" />
+</head>
+<body class="bg-grid">
+
+  <!-- ── Navbar ────────────────────────────────────────────── -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand" aria-label="GeoSentinel home">
+        <div class="brand-icon" aria-hidden="true">🛡</div>
+        <div>
+          <div class="brand-name">GeoSentinel</div>
+          <div class="brand-tagline">Hazard Intelligence</div>
+        </div>
+      </a>
+
+      <nav class="navbar-links" aria-label="Dashboard navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link active" aria-current="page">Dashboard</a>
+      </nav>
+    </div>
+  </nav>
+
+  <!-- ── Warning banner (hidden by default; shown by JS on history fetch failure) -->
+  <div id="warning-banner" class="page-container" style="padding-top:16px;display:none;" role="alert">
+    <div class="warning-banner">
+      <span aria-hidden="true">⚠️</span>
+      <span id="warning-banner-text">Assessment history could not be refreshed. Showing locally cached results.</span>
+      <button onclick="document.getElementById('warning-banner').style.display='none'"
+              class="toast-close" aria-label="Dismiss warning">&times;</button>
+    </div>
+  </div>
+
+  <!-- ── Main Dashboard ────────────────────────────────────── -->
+  <main class="page-container" role="main" id="main-content">
+
+    <!-- Page header -->
+    <div style="padding:28px 0 8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px;">
+          Hazard Assessment
+        </h1>
+        <p style="font-size:0.85rem;color:var(--color-text-secondary);">
+          Enter site parameters to generate a landslide risk report.
+        </p>
+      </div>
+      <div style="font-size:0.78rem;color:var(--color-text-muted);background:rgba(255,255,255,0.04);
+                  border:1px solid var(--color-border);border-radius:6px;padding:6px 12px;">
+        🔒 Preliminary assessment only — not a substitute for professional survey
+      </div>
+    </div>
+
+    <!-- ── Two-column grid ────────────────────────────────── -->
+    <div class="dashboard-layout">
+
+      <!-- ── LEFT COLUMN — Input Form ─────────────────────── -->
+      <aside class="dashboard-left" aria-label="Assessment input">
+
+        <div class="glass-card form-card">
+          <div class="form-card-title">
+            <span aria-hidden="true">📋</span> Site Parameters
+          </div>
+          <p class="form-card-subtitle">All seven fields are required for a complete assessment.</p>
+
+          <form id="assessment-form" novalidate aria-label="Landslide risk assessment form">
+
+            <!-- Slope Angle -->
+            <div class="form-group">
+              <label for="slope-angle">
+                📐 Slope Angle
+                <span class="label-unit">(degrees, 0–90)</span>
+              </label>
+              <input
+                type="number"
+                id="slope-angle"
+                name="slope_angle"
+                class="form-input"
+                placeholder="e.g. 35"
+                min="0" max="90" step="0.1"
+                aria-describedby="slope-angle-error"
+                aria-required="true"
+              />
+              <div id="slope-angle-error" class="field-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <!-- Rainfall Intensity -->
+            <div class="form-group">
+              <label for="rainfall-intensity">
+                🌧 Rainfall Intensity
+                <span class="label-unit">(mm/h, 0–1000)</span>
+              </label>
+              <input
+                type="number"
+                id="rainfall-intensity"
+                name="rainfall_intensity"
+                class="form-input"
+                placeholder="e.g. 80"
+                min="0" max="1000" step="0.1"
+                aria-describedby="rainfall-error"
+                aria-required="true"
+              />
+              <div id="rainfall-error" class="field-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <!-- Soil Type -->
+            <div class="form-group">
+              <label for="soil-type">
+                🪨 Soil Type
+              </label>
+              <select
+                id="soil-type"
+                name="soil_type"
+                class="form-select"
+                aria-describedby="soil-type-error"
+                aria-required="true"
+              >
+                <option value="" disabled selected>Select soil classification…</option>
+                <option value="Clay">Clay — Highest susceptibility</option>
+                <option value="Silt">Silt — High susceptibility</option>
+                <option value="Loam">Loam — Moderate susceptibility</option>
+                <option value="Sandy">Sandy — Lower susceptibility</option>
+                <option value="Rocky">Rocky — Lowest susceptibility</option>
+              </select>
+              <div id="soil-type-error" class="field-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <!-- Vegetation Cover -->
+            <div class="form-group">
+              <label for="vegetation-cover">
+                🌿 Vegetation Cover
+                <span class="label-unit">(%, 0–100)</span>
+              </label>
+              <input
+                type="number"
+                id="vegetation-cover"
+                name="vegetation_cover"
+                class="form-input"
+                placeholder="e.g. 45"
+                min="0" max="100" step="0.1"
+                aria-describedby="vegetation-error"
+                aria-required="true"
+              />
+              <div id="vegetation-error" class="field-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <!-- Fault Zone Proximity -->
+            <div class="form-group">
+              <label for="fault-proximity">
+                ⚡ Fault Zone Proximity
+                <span class="label-unit">(km, 0–500)</span>
+              </label>
+              <input
+                type="number"
+                id="fault-proximity"
+                name="fault_zone_proximity"
+                class="form-input"
+                placeholder="e.g. 12.5"
+                min="0" max="500" step="0.1"
+                aria-describedby="fault-error"
+                aria-required="true"
+              />
+              <div id="fault-error" class="field-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <!-- Land Use Type -->
+            <div class="form-group">
+              <label for="land-use-type">
+                🏙 Land Use Type
+              </label>
+              <select
+                id="land-use-type"
+                name="land_use_type"
+                class="form-select"
+                aria-describedby="land-use-error"
+                aria-required="true"
+              >
+                <option value="" disabled selected>Select land use…</option>
+                <option value="Urban">Urban — Highest loading</option>
+                <option value="Bare_Ground">Bare Ground — High loading</option>
+                <option value="Agricultural">Agricultural — Moderate</option>
+                <option value="Forest">Forest — Most stable</option>
+              </select>
+              <div id="land-use-error" class="field-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <!-- Drainage Condition -->
+            <div class="form-group">
+              <label for="drainage-condition">
+                💧 Drainage Condition
+              </label>
+              <select
+                id="drainage-condition"
+                name="drainage_condition"
+                class="form-select"
+                aria-describedby="drainage-error"
+                aria-required="true"
+              >
+                <option value="" disabled selected>Select drainage quality…</option>
+                <option value="Poor">Poor — Amplifies risk</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Good">Good — Mitigating</option>
+              </select>
+              <div id="drainage-error" class="field-error" role="alert" aria-live="polite"></div>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-footer">
+              <button
+                type="submit"
+                id="analyze-btn"
+                class="btn btn-primary btn-analyze"
+                aria-label="Analyze risk for entered parameters"
+              >
+                <span class="spinner" id="analyze-spinner" aria-hidden="true"></span>
+                <span id="analyze-btn-text">🔍 Analyze Risk</span>
+              </button>
+            </div>
+
+          </form>
+        </div><!-- /form-card -->
+
+      </aside><!-- /left -->
+
+
+      <!-- ── RIGHT COLUMN — Results ─────────────────────────── -->
+      <section class="dashboard-right" aria-label="Assessment results" aria-live="polite">
+
+        <!-- Gauge + Category Row -->
+        <div class="results-top">
+
+          <!-- Risk Score Gauge -->
+          <div class="glass-card gauge-card" id="gauge-panel">
+            <div class="gauge-card-title">Hazard Score</div>
+
+            <!-- Placeholder (shown before first assessment) -->
+            <div id="gauge-placeholder" class="result-placeholder">
+              <div class="result-placeholder-icon" aria-hidden="true">📊</div>
+              <p class="result-placeholder-text">Submit parameters to see the risk score</p>
+            </div>
+
+            <!-- Gauge SVG (hidden until result) -->
+            <div id="gauge-result" style="display:none;">
+              <div id="gauge-container" role="img" aria-label="Risk score gauge">
+                <svg
+                  id="gauge-svg"
+                  viewBox="0 0 200 110"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <!-- Track arc (background) -->
+                  <path
+                    id="gauge-track"
+                    d="M 20 100 A 80 80 0 0 1 180 100"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.08)"
+                    stroke-width="14"
+                    stroke-linecap="round"
+                  />
+                  <!-- Value arc (animated by JS) -->
+                  <path
+                    id="gauge-arc"
+                    d="M 20 100 A 80 80 0 0 1 180 100"
+                    fill="none"
+                    stroke="var(--color-accent-cyan)"
+                    stroke-width="14"
+                    stroke-linecap="round"
+                    stroke-dasharray="251.2"
+                    stroke-dashoffset="251.2"
+                  />
+                  <!-- Score text -->
+                  <text
+                    id="gauge-text"
+                    x="100" y="88"
+                    text-anchor="middle"
+                    font-size="28"
+                    font-weight="800"
+                    fill="white"
+                    font-family="Inter, system-ui, sans-serif"
+                  >--</text>
+                  <text
+                    x="100" y="106"
+                    text-anchor="middle"
+                    font-size="9"
+                    fill="#64748B"
+                    font-family="Inter, system-ui, sans-serif"
+                    letter-spacing="1"
+                  >OUT OF 100</text>
+                </svg>
+              </div>
+            </div>
+          </div><!-- /gauge-panel -->
+
+          <!-- Risk Category Badge -->
+          <div class="glass-card category-card" id="category-panel">
+            <div class="category-label">Risk Category</div>
+
+            <!-- Placeholder -->
+            <div id="category-placeholder" class="result-placeholder" style="padding:20px 0;">
+              <div class="result-placeholder-icon" aria-hidden="true">🏷</div>
+              <p class="result-placeholder-text">Category will appear after analysis</p>
+            </div>
+
+            <!-- Result -->
+            <div id="category-result" style="display:none;">
+              <div
+                id="category-badge"
+                class="category-badge-large"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >—</div>
+              <p id="category-summary" class="category-summary">—</p>
+            </div>
+          </div><!-- /category-panel -->
+
+        </div><!-- /results-top -->
+
+        <!-- Hazard Analysis Card -->
+        <div class="glass-card analysis-card" id="analysis-panel">
+          <div class="panel-title">
+            <span aria-hidden="true">🔍</span> Hazard Analysis
+          </div>
+
+          <!-- Placeholder -->
+          <div id="analysis-placeholder" class="result-placeholder">
+            <div class="result-placeholder-icon" aria-hidden="true">🔍</div>
+            <p class="result-placeholder-text">Factor breakdown will appear here after analysis</p>
+          </div>
+
+          <!-- Factor list (populated by JS) -->
+          <div id="factor-list" class="factor-list" role="list" style="display:none;" aria-label="Risk factor breakdown">
+            <!-- JS renders factor-row items here -->
+          </div>
+
+          <!-- Summary text -->
+          <div
+            id="analysis-summary"
+            style="display:none;margin-top:16px;padding:12px 14px;
+                   background:rgba(255,255,255,0.03);border-radius:6px;
+                   font-size:0.85rem;color:var(--color-text-secondary);line-height:1.6;
+                   border:1px solid var(--color-border);"
+            role="note"
+          ></div>
+        </div><!-- /analysis-panel -->
+
+        <!-- Recommendations Panel -->
+        <div class="glass-card recommendations-card" id="recommendations-panel">
+          <div class="panel-title">
+            <span aria-hidden="true">🛠</span> Mitigation Recommendations
+          </div>
+
+          <!-- Placeholder -->
+          <div id="rec-placeholder" class="result-placeholder">
+            <div class="result-placeholder-icon" aria-hidden="true">🛠</div>
+            <p class="result-placeholder-text">Recommendations will appear after analysis</p>
+          </div>
+
+          <!-- Recommendation list (populated by JS) -->
+          <ul id="rec-list" class="rec-list" role="list" style="display:none;" aria-label="Mitigation recommendations">
+            <!-- JS renders rec-item elements here -->
+          </ul>
+        </div><!-- /recommendations-panel -->
+
+        <!-- PDF Download -->
+        <div class="glass-card pdf-action" id="pdf-panel">
+          <div>
+            <div class="pdf-action-title">📄 Assessment Report</div>
+            <div class="pdf-action-text">Download a full PDF report of this assessment</div>
+          </div>
+          <button
+            id="pdf-btn"
+            class="btn btn-outline"
+            disabled
+            aria-label="Download PDF assessment report"
+            aria-disabled="true"
+          >
+            <span aria-hidden="true">⬇</span> Download PDF
+          </button>
+        </div>
+
+      </section><!-- /right -->
+
+    </div><!-- /dashboard-layout -->
+
+
+    <!-- ── Assessment History ─────────────────────────────── -->
+    <section class="history-section" aria-labelledby="history-heading">
+      <div class="glass-card history-card">
+
+        <div class="history-header">
+          <div class="panel-title" style="margin-bottom:0;padding-bottom:0;border-bottom:none;" id="history-heading">
+            <span aria-hidden="true">🕐</span> Assessment History
+          </div>
+          <span id="history-count" class="history-count" aria-live="polite">0 records</span>
+        </div>
+
+        <div class="history-table-wrap" role="region" aria-label="Assessment history table" tabindex="0">
+          <table class="history-table" id="history-table" aria-label="Previous assessments">
+            <thead>
+              <tr>
+                <th scope="col">Timestamp</th>
+                <th scope="col">Slope (°)</th>
+                <th scope="col">Rainfall (mm/h)</th>
+                <th scope="col">Soil Type</th>
+                <th scope="col">Score</th>
+                <th scope="col">Category</th>
+                <th scope="col"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody">
+              <!-- Default empty state row -->
+              <tr id="history-empty-row">
+                <td colspan="7">
+                  <div class="history-empty">
+                    <div class="history-empty-icon" aria-hidden="true">📭</div>
+                    <p>No previous assessments available.</p>
+                    <p style="margin-top:4px;font-size:0.78rem;">Complete your first assessment above to see it here.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div><!-- /table-wrap -->
+
+      </div><!-- /history-card -->
+    </section>
+
+    <div style="height:48px;"></div>
+
+  </main><!-- /main-content -->
+
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer class="footer" role="contentinfo">
+    <div class="page-container">
+      <p class="footer-text">
+        GeoSentinel &mdash; Preliminary assessment only. Does not replace professional geotechnical expertise.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ── Toast Container ───────────────────────────────────── -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ── Screen-reader only utility ───────────────────────── -->
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+
+  <!-- ── JS Modules (loaded after DOM) ─────────────────────── -->
+  <script type="module" src="assets/js/api.js"></script>
+  <script type="module" src="assets/js/gauge.js"></script>
+  <script type="module" src="assets/js/history.js"></script>
+  <script type="module" src="assets/js/report.js"></script>
+  <script type="module" src="assets/js/app.js"></script>
+
+</body>
+</html>

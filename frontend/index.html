@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoSentinel — AI-Powered Geological Hazard Assessment</title>
+  <meta name="description" content="Assess landslide risk using geological and environmental parameters. Get hazard scores, risk explanations, and mitigation recommendations instantly." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230F172A'/><text y='22' x='4' font-size='20'>🛡</text></svg>" />
+</head>
+<body class="bg-grid">
+
+  <!-- ── Navbar ────────────────────────────────────────────── -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand" aria-label="GeoSentinel home">
+        <div class="brand-icon" aria-hidden="true">🛡</div>
+        <div>
+          <div class="brand-name">GeoSentinel</div>
+          <div class="brand-tagline">Hazard Intelligence</div>
+        </div>
+      </a>
+
+      <nav class="navbar-links" aria-label="Site links">
+        <a href="#parameters" class="nav-link">Parameters</a>
+        <a href="#outputs"    class="nav-link">Outputs</a>
+        <a href="#how"        class="nav-link">How It Works</a>
+        <a href="dashboard.html" class="btn btn-primary nav-link-cta" style="padding:8px 20px;font-size:0.875rem;">
+          Launch Dashboard
+        </a>
+      </nav>
+    </div>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="page-container">
+
+      <div class="hero-badge" aria-label="Platform category">
+        <span aria-hidden="true">🌍</span>
+        AWS Serverless · Geological Intelligence Platform
+      </div>
+
+      <h1 class="hero-title" id="hero-heading">
+        Assess Landslide Risk<br />
+        with <span class="highlight">Precision & Speed</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        GeoSentinel combines geological parameters and environmental indicators to deliver
+        instant hazard scores, factor-level explanations, and actionable mitigation
+        recommendations — no specialist software required.
+      </p>
+
+      <div class="hero-actions">
+        <a href="dashboard.html" class="btn btn-primary" style="font-size:1.05rem;padding:14px 32px;">
+          <span aria-hidden="true">🚀</span> Start Assessment
+        </a>
+        <a href="#parameters" class="btn btn-outline">
+          <span aria-hidden="true">📋</span> View Parameters
+        </a>
+      </div>
+
+      <div class="hero-stats" role="list" aria-label="Platform statistics">
+        <div class="stat-item" role="listitem">
+          <div class="stat-value">7</div>
+          <div class="stat-label">Input Parameters</div>
+        </div>
+        <div class="stat-item" role="listitem">
+          <div class="stat-value">0–100</div>
+          <div class="stat-label">Hazard Score Range</div>
+        </div>
+        <div class="stat-item" role="listitem">
+          <div class="stat-value">4</div>
+          <div class="stat-label">Risk Categories</div>
+        </div>
+        <div class="stat-item" role="listitem">
+          <div class="stat-value">&lt;3s</div>
+          <div class="stat-label">Response Time</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ── Input Parameters ──────────────────────────────────── -->
+  <section class="section" id="parameters" aria-labelledby="params-heading">
+    <div class="page-container">
+      <div class="text-center">
+        <h2 class="section-title" id="params-heading">Input Parameters</h2>
+        <p class="section-subtitle mx-auto">
+          Enter these seven geological and environmental indicators to generate a comprehensive
+          landslide risk assessment for any site.
+        </p>
+      </div>
+
+      <div class="features-grid">
+
+        <article class="feature-card glass-card glass-card-hover">
+          <div class="feature-icon" aria-hidden="true">📐</div>
+          <h3 class="feature-name">Slope Angle</h3>
+          <p class="feature-desc">
+            Terrain inclination in degrees (0°–90°). The dominant driver of gravitational
+            stress on slope material. Higher angles significantly increase instability.
+          </p>
+          <div style="margin-top:12px;">
+            <span class="badge badge-critical" style="font-size:0.7rem;">Weight: 25%</span>
+          </div>
+        </article>
+
+        <article class="feature-card glass-card glass-card-hover">
+          <div class="feature-icon" aria-hidden="true">🌧</div>
+          <h3 class="feature-name">Rainfall Intensity</h3>
+          <p class="feature-desc">
+            Average or peak precipitation in mm/h (0–1000 mm/h). High rainfall
+            increases pore-water pressure, which is the primary triggering mechanism
+            for most landslides.
+          </p>
+          <div style="margin-top:12px;">
+            <span class="badge badge-high" style="font-size:0.7rem;">Weight: 20%</span>
+          </div>
+        </article>
+
+        <article class="feature-card glass-card glass-card-hover">
+          <div class="feature-icon" aria-hidden="true">🪨</div>
+          <h3 class="feature-name">Soil Type</h3>
+          <p class="feature-desc">
+            Dominant soil classification: Clay, Silt, Loam, Sandy, or Rocky. Clay soils
+            have very low cohesion when saturated and are the most susceptible to failure.
+          </p>
+          <div style="margin-top:12px;">
+            <span class="badge badge-high" style="font-size:0.7rem;">Weight: 18%</span>
+          </div>
+        </article>
+
+        <article class="feature-card glass-card glass-card-hover">
+          <div class="feature-icon" aria-hidden="true">🌿</div>
+          <h3 class="feature-name">Vegetation Cover</h3>
+          <p class="feature-desc">
+            Percentage of area covered by vegetation (0–100%). Root systems reinforce
+            soil and reduce runoff. Higher coverage is a stabilising factor that lowers
+            the hazard score.
+          </p>
+          <div style="margin-top:12px;">
+            <span class="badge badge-low" style="font-size:0.7rem;">Weight: 7% (stabilising)</span>
+          </div>
+        </article>
+
+        <article class="feature-card glass-card glass-card-hover">
+          <div class="feature-icon" aria-hidden="true">⚡</div>
+          <h3 class="feature-name">Fault Zone Proximity</h3>
+          <p class="feature-desc">
+            Distance in km to the nearest known geological fault (0–500 km). Sites
+            close to active faults are pre-conditioned for slope failure through
+            seismic activity and fractured rock.
+          </p>
+          <div style="margin-top:12px;">
+            <span class="badge badge-moderate" style="font-size:0.7rem;">Weight: 10%</span>
+          </div>
+        </article>
+
+        <article class="feature-card glass-card glass-card-hover">
+          <div class="feature-icon" aria-hidden="true">🏙</div>
+          <h3 class="feature-name">Land Use Type</h3>
+          <p class="feature-desc">
+            Current land classification: Urban, Bare Ground, Agricultural, or Forest.
+            Urban and bare ground surfaces increase runoff and surcharge loading
+            compared to forested areas.
+          </p>
+          <div style="margin-top:12px;">
+            <span class="badge badge-low" style="font-size:0.7rem;">Weight: 5%</span>
+          </div>
+        </article>
+
+        <article class="feature-card glass-card glass-card-hover">
+          <div class="feature-icon" aria-hidden="true">💧</div>
+          <h3 class="feature-name">Drainage Condition</h3>
+          <p class="feature-desc">
+            Quality of site drainage: Good, Moderate, or Poor. Poor drainage
+            concentrates water at the slope base and amplifies the destabilising
+            effect of rainfall intensity.
+          </p>
+          <div style="margin-top:12px;">
+            <span class="badge badge-high" style="font-size:0.7rem;">Weight: 15%</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ── Outputs ────────────────────────────────────────────── -->
+  <section class="section" id="outputs" aria-labelledby="outputs-heading">
+    <div class="page-container">
+      <div class="text-center">
+        <h2 class="section-title" id="outputs-heading">What You Get</h2>
+        <p class="section-subtitle mx-auto">
+          Every assessment produces four types of output designed to support
+          decision-making at every level — from field surveys to formal reports.
+        </p>
+      </div>
+
+      <div class="outputs-grid">
+
+        <article class="output-card glass-card glass-card-hover">
+          <div class="output-icon" aria-hidden="true">📊</div>
+          <h3 class="output-title">Hazard Score</h3>
+          <p class="output-desc">
+            A numeric value from 0 to 100 representing computed landslide
+            susceptibility, displayed on an animated arc gauge.
+          </p>
+        </article>
+
+        <article class="output-card glass-card glass-card-hover">
+          <div class="output-icon" aria-hidden="true">🏷</div>
+          <h3 class="output-title">Risk Category</h3>
+          <p class="output-desc">
+            One of four colour-coded labels: <span class="risk-low">Low</span>,
+            <span class="risk-moderate">Moderate</span>,
+            <span class="risk-high">High</span>, or
+            <span class="risk-critical">Critical</span>.
+          </p>
+        </article>
+
+        <article class="output-card glass-card glass-card-hover">
+          <div class="output-icon" aria-hidden="true">🔍</div>
+          <h3 class="output-title">Risk Explanation</h3>
+          <p class="output-desc">
+            Factor-level breakdown showing which parameters increased risk (▲),
+            reduced risk (▼), or were neutral (→), with a plain-language summary.
+          </p>
+        </article>
+
+        <article class="output-card glass-card glass-card-hover">
+          <div class="output-icon" aria-hidden="true">🛠</div>
+          <h3 class="output-title">Recommendations</h3>
+          <p class="output-desc">
+            Tailored mitigation actions — from improving drainage to restricting
+            construction — generated from your specific parameter combination.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── Risk Categories Explained ────────────────────────── -->
+  <section class="section" id="how" aria-labelledby="how-heading">
+    <div class="page-container">
+      <div class="text-center">
+        <h2 class="section-title" id="how-heading">Risk Category Reference</h2>
+        <p class="section-subtitle mx-auto">
+          The hazard score is mapped to one of four risk categories to provide
+          an immediately interpretable result.
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">
+
+        <div class="glass-card" style="padding:24px;border-left:3px solid var(--color-risk-low);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span class="badge badge-low">Low</span>
+            <span style="font-size:0.82rem;color:var(--color-text-muted);">Score 0–24</span>
+          </div>
+          <p style="font-size:0.84rem;color:var(--color-text-secondary);">
+            Minimal susceptibility. Standard monitoring is sufficient. No immediate intervention required.
+          </p>
+        </div>
+
+        <div class="glass-card" style="padding:24px;border-left:3px solid var(--color-risk-moderate);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span class="badge badge-moderate">Moderate</span>
+            <span style="font-size:0.82rem;color:var(--color-text-muted);">Score 25–49</span>
+          </div>
+          <p style="font-size:0.84rem;color:var(--color-text-secondary);">
+            Elevated susceptibility. Review drainage and vegetation. Periodic site inspection recommended.
+          </p>
+        </div>
+
+        <div class="glass-card" style="padding:24px;border-left:3px solid var(--color-risk-high);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span class="badge badge-high">High</span>
+            <span style="font-size:0.82rem;color:var(--color-text-muted);">Score 50–74</span>
+          </div>
+          <p style="font-size:0.84rem;color:var(--color-text-secondary);">
+            Significant susceptibility. Geotechnical survey recommended. Consider engineering controls.
+          </p>
+        </div>
+
+        <div class="glass-card" style="padding:24px;border-left:3px solid var(--color-risk-critical);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span class="badge badge-critical">Critical</span>
+            <span style="font-size:0.82rem;color:var(--color-text-muted);">Score 75–100</span>
+          </div>
+          <p style="font-size:0.84rem;color:var(--color-text-secondary);">
+            Extreme susceptibility. Immediate expert assessment required. Restrict construction activity.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ── Architecture ──────────────────────────────────────── -->
+  <section class="section">
+    <div class="page-container">
+      <div class="text-center">
+        <h2 class="section-title">Built on AWS Serverless</h2>
+        <p class="section-subtitle mx-auto">
+          GeoSentinel is fully serverless — no infrastructure to manage, instant scalability,
+          and pay-per-use pricing.
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-top:0;">
+        <div class="glass-card" style="padding:22px;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:10px;" aria-hidden="true">☁</div>
+          <div style="font-size:0.88rem;font-weight:600;margin-bottom:6px;">Amazon S3</div>
+          <div style="font-size:0.78rem;color:var(--color-text-muted);">Static website hosting</div>
+        </div>
+        <div class="glass-card" style="padding:22px;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:10px;" aria-hidden="true">🌐</div>
+          <div style="font-size:0.88rem;font-weight:600;margin-bottom:6px;">CloudFront</div>
+          <div style="font-size:0.78rem;color:var(--color-text-muted);">Global CDN + HTTPS</div>
+        </div>
+        <div class="glass-card" style="padding:22px;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:10px;" aria-hidden="true">🔗</div>
+          <div style="font-size:0.88rem;font-weight:600;margin-bottom:6px;">API Gateway</div>
+          <div style="font-size:0.78rem;color:var(--color-text-muted);">REST API + throttling</div>
+        </div>
+        <div class="glass-card" style="padding:22px;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:10px;" aria-hidden="true">⚡</div>
+          <div style="font-size:0.88rem;font-weight:600;margin-bottom:6px;">AWS Lambda</div>
+          <div style="font-size:0.78rem;color:var(--color-text-muted);">Assessment engine</div>
+        </div>
+        <div class="glass-card" style="padding:22px;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:10px;" aria-hidden="true">🗄</div>
+          <div style="font-size:0.88rem;font-weight:600;margin-bottom:6px;">DynamoDB</div>
+          <div style="font-size:0.78rem;color:var(--color-text-muted);">Assessment history</div>
+        </div>
+        <div class="glass-card" style="padding:22px;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:10px;" aria-hidden="true">📈</div>
+          <div style="font-size:0.88rem;font-weight:600;margin-bottom:6px;">CloudWatch</div>
+          <div style="font-size:0.78rem;color:var(--color-text-muted);">Monitoring + logs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── CTA ───────────────────────────────────────────────── -->
+  <section class="cta-section" aria-labelledby="cta-heading">
+    <div class="cta-glow" aria-hidden="true"></div>
+    <h2 class="cta-title" id="cta-heading">Ready to assess your site?</h2>
+    <p class="cta-subtitle">
+      Open the dashboard, enter your parameters, and receive a full hazard report in seconds.
+    </p>
+    <a href="dashboard.html" class="btn btn-primary" style="font-size:1.05rem;padding:14px 36px;">
+      <span aria-hidden="true">🛡</span> Open Dashboard
+    </a>
+    <p style="margin-top:20px;font-size:0.78rem;color:var(--color-text-muted);">
+      Preliminary assessment only. Does not replace a professional geotechnical survey.
+    </p>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer class="footer" role="contentinfo">
+    <div class="page-container">
+      <p class="footer-text">
+        GeoSentinel &mdash; AI-Powered Geological Hazard Assessment Platform &mdash;
+        Built on <a href="https://aws.amazon.com/" class="footer-link" target="_blank" rel="noopener">AWS Serverless</a>
+      </p>
+      <p class="footer-text" style="margin-top:6px;">
+        This platform provides preliminary assessments only and does not replace professional geotechnical expertise.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Toast container (for JS-driven toasts) -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
+
+</body>
+</html>
