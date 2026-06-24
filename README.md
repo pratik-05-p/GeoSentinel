@@ -71,9 +71,14 @@ GeoSentinel evaluates landslide susceptibility using:
 
 ## Live Demo
 
+🌐 Application:
 https://pratik-05-p.github.io/GeoSentinel/frontend/
 
----
+## Demo Video
+
+🎥 Watch the project demonstration:
+
+https://drive.google.com/file/d/1Sf7VnS3KyAHfxGh5Ch08rE7qPPiuBheu/view?usp=sharing
 
 ## GitHub Repository
 
