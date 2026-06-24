@@ -95,5 +95,3 @@ https://github.com/pratik-05-p/GeoSentinel
 ## Author
 
 **Pratik Das**
-
-Veer Surendra Sai University of Technology (VSSUT), Burla
